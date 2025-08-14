@@ -190,9 +190,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should print count of pulled values if there is no history', () =>
+    it('should always print count of pulled values', () =>
       fc.assert(
-        fc.property(fc.array(fc.integer()), (expectedValues) => {
+        fc.property(fc.array(fc.integer()), fc.boolean(), (expectedValues, history) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -207,7 +207,7 @@ describe('StreamArbitrary', () => {
           stringify.mockImplementation(fakeStringify);
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, false);
+          const arb = new StreamArbitrary(sourceArb, history);
           const stream = arb.generate(mrng, biasFactor).value;
           void [...stream.take(expectedValues.length)];
 
